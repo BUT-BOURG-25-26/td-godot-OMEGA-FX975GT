@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfu1vjfbk2rmh"]
+
+[ext_resource type="PackedScene" uid="uid://dd7kcl4exi3fr" path="res://Assets/KennyAssets/Model/characterMedium.fbx" id="1_jg0dx"]
+[ext_resource type="Material" uid="uid://be3dxogx0wkf3" path="res://Assets/KennyAssets/Skins/Materials/M_cyborg.tres" id="2_5vyq5"]
+
+[node name="cyborg" instance=ExtResource("1_jg0dx")]
+
+[node name="characterMedium" parent="Root/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("2_5vyq5")

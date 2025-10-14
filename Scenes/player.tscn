@@ -1,10 +1,49 @@
-[gd_scene load_steps=11 format=3 uid="uid://bw0dhumjpcqmi"]
+[gd_scene load_steps=22 format=3 uid="uid://bw0dhumjpcqmi"]
 
 [ext_resource type="Script" uid="uid://gtney2ofwoov" path="res://Scripts/player.gd" id="1_cvnsp"]
-[ext_resource type="Material" uid="uid://b33q5gc7fqod0" path="res://Materials/M_Player.tres" id="1_v0iea"]
+[ext_resource type="PackedScene" uid="uid://d1ceuge37ite" path="res://Scenes/vfx_impact.tscn" id="2_vgqql"]
+[ext_resource type="PackedScene" uid="uid://lkqelpwnb452" path="res://Scenes/skater.tscn" id="3_3smsa"]
 [ext_resource type="Script" uid="uid://ctgjgv6de0fyo" path="res://Scripts/health_bar.gd" id="3_6t5aa"]
+[ext_resource type="Animation" uid="uid://gnc1g4fccyn3" path="res://Assets/KennyAssets/Animations/Root_Idle.res" id="4_8erm5"]
+[ext_resource type="Animation" uid="uid://ba2g4q3hcjmfq" path="res://Assets/KennyAssets/Animations/Root_Jump.res" id="5_f1ek2"]
+[ext_resource type="Animation" uid="uid://beyip1vbqvjky" path="res://Assets/KennyAssets/Animations/Root_Run.res" id="6_tx1dd"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gymyn"]
+animation = &"Root_Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pu2lt"]
+animation = &"Root_Run"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ukyrk"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7dp3o"]
+xfade_time = 0.5
+advance_mode = 2
+advance_condition = &"isRunning"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h4iuc"]
+xfade_time = 0.5
+advance_mode = 2
+advance_condition = &"isIdling"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_fd4e3"]
+states/Root_Idle/node = SubResource("AnimationNodeAnimation_gymyn")
+states/Root_Idle/position = Vector2(372, 79)
+states/Root_Run/node = SubResource("AnimationNodeAnimation_pu2lt")
+states/Root_Run/position = Vector2(442, 210)
+transitions = ["Start", "Root_Idle", SubResource("AnimationNodeStateMachineTransition_ukyrk"), "Root_Idle", "Root_Run", SubResource("AnimationNodeStateMachineTransition_7dp3o"), "Root_Run", "Root_Idle", SubResource("AnimationNodeStateMachineTransition_h4iuc")]
+graph_offset = Vector2(0, 64)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qqcod"]
+_data = {
+&"Root_Idle": ExtResource("4_8erm5"),
+&"Root_Jump": ExtResource("5_f1ek2"),
+&"Root_Run": ExtResource("6_tx1dd")
+}
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v0iea"]
+height = 3.92035
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cvnsp"]
 bg_color = Color(0.73531, 1, 0.820314, 1)
@@ -76,15 +115,29 @@ _data = {
 
 [node name="Player" type="Node3D" groups=["player"]]
 script = ExtResource("1_cvnsp")
+attackVfx = ExtResource("2_vgqql")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
+[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+axis_lock_angular_x = true
+axis_lock_angular_z = true
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="RigidBody3D"]
-material_override = ExtResource("1_v0iea")
-use_collision = true
+[node name="characterMedium" parent="RigidBody3D" instance=ExtResource("3_3smsa")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="AnimationTree" type="AnimationTree" parent="RigidBody3D/characterMedium"]
+tree_root = SubResource("AnimationNodeStateMachine_fd4e3")
+anim_player = NodePath("../AnimationPlayer")
+parameters/conditions/isIdling = false
+parameters/conditions/isRunning = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="RigidBody3D/characterMedium"]
+libraries = {
+&"": SubResource("AnimationLibrary_qqcod")
+}
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.846905, 0)
 shape = SubResource("CapsuleShape3D_v0iea")
 
 [node name="SubViewport" type="SubViewport" parent="RigidBody3D"]
@@ -108,7 +161,7 @@ show_percentage = false
 script = ExtResource("3_6t5aa")
 
 [node name="Sprite3D" type="Sprite3D" parent="RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18181, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.98193, 0)
 billboard = 1
 texture = SubResource("ViewportTexture_cvnsp")
 

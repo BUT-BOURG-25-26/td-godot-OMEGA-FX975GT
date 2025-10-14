@@ -5,13 +5,11 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hghv2"]
 
-[node name="enemy" type="Node3D"]
+[node name="enemy" type="CharacterBody3D" groups=["enemy"]]
 script = ExtResource("1_1f0kj")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-
-[node name="CSGBox3D" type="CSGBox3D" parent="RigidBody3D"]
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
 material_override = ExtResource("1_hghv2")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_hghv2")

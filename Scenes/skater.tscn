@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://lkqelpwnb452"]
+
+[ext_resource type="PackedScene" uid="uid://dd7kcl4exi3fr" path="res://Assets/KennyAssets/Model/characterMedium.fbx" id="1_btjt2"]
+[ext_resource type="Material" uid="uid://dm13nvffxohl1" path="res://Assets/KennyAssets/Skins/Materials/M_skater.tres" id="2_nb72f"]
+
+[node name="skater" instance=ExtResource("1_btjt2")]
+
+[node name="characterMedium" parent="Root/Skeleton3D" index="0"]
+surface_material_override/0 = ExtResource("2_nb72f")
